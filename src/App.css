@@ -1,0 +1,6 @@
+/* App-specific styles - most styling is handled by Tailwind */
+
+/* Font display class for Pacifico */
+.font-display {
+  font-family: 'Pacifico', cursive;
+}
