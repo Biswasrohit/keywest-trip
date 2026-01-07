@@ -1,5 +1,6 @@
 import { UserProvider } from './context/UserContext';
 import Header from './components/Header';
+import CountdownTimer from './components/CountdownTimer';
 import ProgressBar from './components/ProgressBar';
 import Itinerary from './components/Itinerary';
 import WeatherWidget from './components/WeatherWidget';
@@ -14,8 +15,15 @@ function App() {
         <Header />
 
         <main>
+          {/* Countdown Hero */}
+          <section className="py-4">
+            <div className="max-w-6xl mx-auto px-4">
+              <CountdownTimer />
+            </div>
+          </section>
+
           {/* Hero Section with Weather */}
-          <section className="py-8">
+          <section className="py-4">
             <div className="max-w-6xl mx-auto px-4">
               <div className="grid md:grid-cols-3 gap-6">
                 {/* Welcome Message */}
