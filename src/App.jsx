@@ -1,7 +1,9 @@
 import { UserProvider } from './context/UserContext';
+import { ItineraryProvider } from './context/ItineraryContext';
 import Header from './components/Header';
 import CountdownTimer from './components/CountdownTimer';
 import ProgressBar from './components/ProgressBar';
+import PackingChecklist from './components/PackingChecklist';
 import Itinerary from './components/Itinerary';
 import WeatherWidget from './components/WeatherWidget';
 import MapSection from './components/MapSection';
@@ -11,7 +13,8 @@ import Footer from './components/Footer';
 function App() {
   return (
     <UserProvider>
-      <div className="min-h-screen">
+      <ItineraryProvider>
+        <div className="min-h-screen">
         <Header />
 
         <main>
@@ -63,6 +66,9 @@ function App() {
           {/* Progress Bar */}
           <ProgressBar />
 
+          {/* Packing Checklist */}
+          <PackingChecklist />
+
           {/* Itinerary */}
           <Itinerary />
 
@@ -74,7 +80,8 @@ function App() {
         </main>
 
         <Footer />
-      </div>
+        </div>
+      </ItineraryProvider>
     </UserProvider>
   );
 }

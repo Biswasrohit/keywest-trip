@@ -5,13 +5,13 @@ import { Camera, ChevronLeft, ChevronRight, X } from 'lucide-react';
 const photos = [
   {
     id: 1,
-    url: 'https://images.unsplash.com/photo-1580904083555-ac5c2dab4330?w=800',
-    caption: 'Key West Sunset',
+    url: 'https://images.unsplash.com/photo-1580191947416-62d35a55e71d?w=800',
+    caption: 'Key West Vibes',
     credit: 'Unsplash',
   },
   {
     id: 2,
-    url: 'https://images.unsplash.com/photo-1548515154-1a847dd63be0?w=800',
+    url: 'https://images.unsplash.com/photo-1568402102990-bc541580b59f?w=800',
     caption: 'Tropical Waters',
     credit: 'Unsplash',
   },

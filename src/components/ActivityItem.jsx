@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import {
-  Plane, MapPin, Utensils, Waves, Music, Clock, Bike,
-  CheckCircle2, Circle, Star, Shirt
+  Plane, MapPin, Utensils, Waves, Music, Bike,
+  CheckCircle2, Circle, Star, Shirt, Trash2
 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useActivities } from '../hooks/useActivities';
+import { useItinerary } from '../context/ItineraryContext';
+import EditableField from './EditableField';
+import EditableTimeField from './EditableTimeField';
 
 const typeConfig = {
   travel: { icon: Plane, color: 'bg-gray-500', lightColor: 'bg-gray-100 text-gray-700' },
@@ -13,9 +17,11 @@ const typeConfig = {
   nightlife: { icon: Music, color: 'bg-coral-500', lightColor: 'bg-coral-100 text-coral-700' },
 };
 
-export default function ActivityItem({ activity, dayDate, isLast }) {
+export default function ActivityItem({ activity, dayIndex, dayDate, isLast }) {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const { currentUser, setShowPicker } = useUser();
   const { activityStates, toggleActivity } = useActivities();
+  const { updateActivity, removeActivity } = useItinerary();
 
   const config = typeConfig[activity.type] || typeConfig.activity;
   const Icon = config.icon;
@@ -43,7 +49,6 @@ export default function ActivityItem({ activity, dayDate, isLast }) {
   }
 
   const isCurrent = now >= activityDate && now <= endDate;
-  const isPast = now > endDate;
 
   const handleToggle = () => {
     if (!currentUser) {
@@ -51,6 +56,23 @@ export default function ActivityItem({ activity, dayDate, isLast }) {
       return;
     }
     toggleActivity(activity.id, currentUser);
+  };
+
+  const handleTitleSave = (newTitle) => {
+    updateActivity(dayIndex, activity.id, { title: newTitle });
+  };
+
+  const handleDescriptionSave = (newDescription) => {
+    updateActivity(dayIndex, activity.id, { description: newDescription });
+  };
+
+  const handleTimeSave = (newTime) => {
+    updateActivity(dayIndex, activity.id, { time: newTime });
+  };
+
+  const handleDelete = () => {
+    removeActivity(dayIndex, activity.id);
+    setShowDeleteConfirm(false);
   };
 
   return (
@@ -101,19 +123,60 @@ export default function ActivityItem({ activity, dayDate, isLast }) {
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-1 text-gray-500 text-sm flex-shrink-0">
-              <Clock size={14} />
-              <span>{activity.time}</span>
+            <div className="flex items-center gap-2">
+              <EditableTimeField
+                time={activity.time}
+                onSave={handleTimeSave}
+              />
+              {/* Delete Button */}
+              {showDeleteConfirm ? (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={handleDelete}
+                    className="px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="px-2 py-1 text-xs bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                  title="Delete event"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
             </div>
           </div>
 
           {/* Title */}
-          <h3 className={`font-semibold text-gray-800 mt-1 ${isCompleted ? 'line-through' : ''}`}>
-            {activity.title}
-          </h3>
+          <div className={`mt-1 ${isCompleted ? 'line-through' : ''}`}>
+            <EditableField
+              value={activity.title}
+              onSave={handleTitleSave}
+              type="text"
+              className="font-semibold text-gray-800"
+              placeholder="Add a title..."
+            />
+          </div>
 
           {/* Description */}
-          <p className="text-gray-600 text-sm mt-1">{activity.description}</p>
+          <div className="mt-1">
+            <EditableField
+              value={activity.description}
+              onSave={handleDescriptionSave}
+              type="textarea"
+              className="text-gray-600 text-sm"
+              placeholder="Add a description..."
+            />
+          </div>
 
           {/* Vibe Note */}
           {activity.vibe && (

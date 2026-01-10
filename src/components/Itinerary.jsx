@@ -1,16 +1,20 @@
-import { itinerary } from '../data/itinerary';
+import { useItinerary } from '../context/ItineraryContext';
 import { useActivities } from '../hooks/useActivities';
 import DayCard from './DayCard';
 import { isToday, parseISO } from 'date-fns';
 
 export default function Itinerary() {
-  const { activityStates, loading } = useActivities();
+  const { itinerary, loading: itineraryLoading } = useItinerary();
+  const { activityStates, loading: activitiesLoading } = useActivities();
 
   // Find which day should be expanded by default
   const todayIndex = itinerary.findIndex((day) => isToday(parseISO(day.date)));
   const defaultExpandedIndex = todayIndex >= 0 ? todayIndex : 0;
 
-  if (loading) {
+  // Count total activities
+  const totalActivities = itinerary.reduce((sum, day) => sum + day.activities.length, 0);
+
+  if (itineraryLoading || activitiesLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-ocean-500 border-t-transparent" />
@@ -27,7 +31,7 @@ export default function Itinerary() {
             Your Itinerary
           </h2>
           <p className="text-white/80 mt-2">
-            6 days • 28 activities • Endless memories
+            {itinerary.length} days • {totalActivities} activities • Endless memories
           </p>
         </div>
 
@@ -65,6 +69,7 @@ export default function Itinerary() {
               <DayCard
                 key={day.day}
                 day={day}
+                dayIndex={index}
                 activities={dayActivities}
                 isExpanded={index === defaultExpandedIndex}
               />

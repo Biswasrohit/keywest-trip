@@ -1,20 +1,10 @@
 import { useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Icon } from 'leaflet';
-import { itinerary } from '../data/itinerary';
+import { useItinerary } from '../context/ItineraryContext';
+import { formatTimeToAMPM } from '../utils/timeUtils';
 import { MapPin } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
-
-// Fix for default marker icons in React-Leaflet
-const defaultIcon = new Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
 
 // Custom colored icons for different days
 const dayColors = ['#0ea5e9', '#f97316', '#22c55e', '#f43f5e', '#8b5cf6', '#6366f1'];
@@ -37,6 +27,7 @@ function createDayIcon(dayIndex) {
 }
 
 export default function MapSection() {
+  const { itinerary } = useItinerary();
   const [selectedDay, setSelectedDay] = useState(null);
 
   // Collect all unique locations
@@ -62,7 +53,7 @@ export default function MapSection() {
     });
 
     return locs;
-  }, []);
+  }, [itinerary]);
 
   // Filter locations by selected day
   const filteredLocations = selectedDay
@@ -136,7 +127,7 @@ export default function MapSection() {
                       <div className="font-semibold">{loc.activity}</div>
                       <div className="text-gray-600">{loc.name}</div>
                       <div className="text-xs text-gray-500 mt-1">
-                        {loc.emoji} Day {loc.day} • {loc.time}
+                        {loc.emoji} Day {loc.day} • {formatTimeToAMPM(loc.time)}
                       </div>
                     </div>
                   </Popup>
